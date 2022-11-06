@@ -3,8 +3,21 @@ import React, { useEffect, useState } from "react";
 import ArrowLeft from "../icons/arrowLeft";
 import Link from "next/link";
 
-/* SSR */
-export async function getServerSideProps({ params }){
+export async function getStaticPaths(){
+  const resp = await fetch("https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/index.json")
+  
+  const pokemon = await resp.json();
+
+  return {
+    paths: pokemon.map(el => ({
+      params: {id: el.id.toString()}
+    })),
+    fallback: false
+  }
+}
+
+/* SSR: Static Side Rendering  */
+export async function getStaticProps({ params }){
   const resp = await fetch("https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/"+params.id+".json")
 
   return{
@@ -20,6 +33,8 @@ export default function Details({pokemonDetail}) {
     /* CSR: Vecchio approccio */
 
   // const [pokemonDetail, setPokemonDetail] = useState(null);
+  // const router = useRouter();
+  // const { id } = router.query;
 
   // useEffect(() => {
   //   async function getPokemonDetails() {
