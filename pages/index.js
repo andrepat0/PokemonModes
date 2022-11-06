@@ -22,7 +22,7 @@ export default function Home({pokemonList}) {
 
   /* CSR: Vecchio approccio */
 
-  // const [pokemonList, setPokemonList] = useState(pokemon);
+  // const [pokemonList, setPokemonList] = useState([]);
 
   // useEffect(() => {
   //   getPokemonList();
