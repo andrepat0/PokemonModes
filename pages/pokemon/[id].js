@@ -3,22 +3,35 @@ import React, { useEffect, useState } from "react";
 import ArrowLeft from "../icons/arrowLeft";
 import Link from "next/link";
 
-export default function Details() {
-  const router = useRouter();
-  const { id } = router.query;
-  const [pokemonDetail, setPokemonDetail] = useState(null);
+/* SSR */
+export async function getServerSideProps({ params }){
+  const resp = await fetch("https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/"+params.id+".json")
 
-  useEffect(() => {
-    async function getPokemonDetails() {
-      const res = await fetch(
-        "https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/" +
-          id +
-          ".json"
-      );
-      setPokemonDetail(await res.json());
+  return{
+    props: {
+      pokemonDetail: await resp.json()
     }
-    getPokemonDetails();
-  }, []);
+  }
+}
+
+
+export default function Details({pokemonDetail}) {
+
+    /* CSR: Vecchio approccio */
+
+  // const [pokemonDetail, setPokemonDetail] = useState(null);
+
+  // useEffect(() => {
+  //   async function getPokemonDetails() {
+  //     const res = await fetch(
+  //       "https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/" +
+  //         id +
+  //         ".json"
+  //     );
+  //     setPokemonDetail(await res.json());
+  //   }
+  //   getPokemonDetails();
+  // }, []);
 
   if (!pokemonDetail) {
     return <p>...loading</p>;

@@ -3,19 +3,37 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function Home() {
-  const [pokemonList, setPokemonList] = useState([]);
+/* 
+  SSR: Funzione che ritorna al nostro componente come props il risultato del API
+ e al primo load della pagina permette di visualizzare tutto l'html già renderizzato 
+ */
+export async function getServerSideProps(){
+  const resp = await fetch("https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json")
 
-  useEffect(() => {
-    getPokemonList();
-  }, []);
-
-  async function getPokemonList() {
-    const pokemonList = await fetch(
-      "https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json"
-    );
-    setPokemonList(await pokemonList.json());
+  return{
+    props: {
+      pokemonList: await resp.json()
+    }
   }
+}
+
+
+export default function Home({pokemonList}) {
+
+  /* CSR: Vecchio approccio */
+
+  // const [pokemonList, setPokemonList] = useState(pokemon);
+
+  // useEffect(() => {
+  //   getPokemonList();
+  // }, []);
+
+  // async function getPokemonList() {
+  //   const pokemonList = await fetch(
+  //     "https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json"
+  //   );
+  //   setPokemonList(await pokemonList.json());
+  // }
 
   if(pokemonList.length == 0){
     return <p>...loading</p>
